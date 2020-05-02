@@ -46,12 +46,14 @@ ggsave(
   filename = "Life Expectancy & GDP.png",
   plot = last_plot(),
   width = 15,
+  path = 
   dpi = 300)
 ```
 
 
 ```{r}
-ggplot(data = weighted_average, aes(x = year, y = gdpPercap, group = continent, color = continent)) +
+ggplot(data = weighted_average) + 
+  stat_summary(mapping=aes(x = year, y = gdpPercap, group = continent, color = continent)) +
       geom_line() +
       theme_bw() +
       labs( x = "Year", y = "GDP per capita") +
