@@ -1,0 +1,47 @@
+---
+title: "Data Science Report"
+author: "Rachael Smith"
+date: "5/2/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+*Develop a few novel questions that data can answer*
+[ ] Get feedback from 6-8 people on their interest in your questions and summarize this feedback
+[ ] Find other examples of people addressing your question
+[ ] Present your question to a data scientist/data analyst to get feedback on the quality of the question and if it can be addressed in 2-months.
+[ ] Create one .rmd file that has your report
+[ ] Have a section for each question
+[ ] Be prepared to discuss your results in the upcoming class
+
+\br
+
+##### How do we measure Student Growth in areas of confidence, personal responsbility and love of learning?
+
+\br
+
+##### How do we measure the success of a company's mission statement?
+
+\br
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
