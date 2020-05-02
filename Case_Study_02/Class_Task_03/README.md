@@ -293,11 +293,11 @@ What trigonometric functions does R provide?
 
 \br
 
-##### How do we measure Student Growth in areas of confidence, personal responsbility and love of learning?
+##### How do we measure Student Growth from year to year?
 
 \br
 
-##### How do we measure the success of a business' mission statement?
+##### How do we measure the success of a company's mission statement?
 
 \br
 
@@ -316,7 +316,6 @@ You will  improve the Research and Creative Works conference visulization found 
 [ ] A 3-D column chart is a poor way to visualize data. Read in the data used to create the 3D barchart visuallization using R (see code below). Then use R to a different chart (or charts) that show the same data in a better format (remember the principles from the John Rauser video).  What is the growth over time trend by department of RC&W attendance?
 [ ] Practice using the help files for geom_line and geom_col and the examples at the end of the help files (see readings)
 [ ] Save your code in your R script and be prepared to share your code and image in class)
-
 
 
 ```{r}
