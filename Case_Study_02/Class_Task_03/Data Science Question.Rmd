@@ -8,36 +8,38 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+\br
 
 *Develop a few novel questions that data can answer*
+
 [ ] Get feedback from 6-8 people on their interest in your questions and summarize this feedback
+
 [ ] Find other examples of people addressing your question
+
 [ ] Present your question to a data scientist/data analyst to get feedback on the quality of the question and if it can be addressed in 2-months.
+
 [ ] Create one .rmd file that has your report
+
 [ ] Have a section for each question
+
 [ ] Be prepared to discuss your results in the upcoming class
 
-\br
-
-##### How do we measure Student Growth in areas of confidence, personal responsbility and love of learning?
+-----
 
 \br
 
-##### How do we measure the success of a company's mission statement?
+## Questions
 
-\br
+-----
 
+##### Is there a difference in the amount of growth a student has from year to year?
 
+-----
 
-```{r cars}
-summary(cars)
-```
+##### Do we see more growth in students who attend the same school for a longer period of time?
 
-## Including Plots
+-----
 
+##### Do we see a huge decline due to school breaks, summer breaks, spring break, etc?
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+-----
