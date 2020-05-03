@@ -28,10 +28,11 @@ wa2 <- wa1 %>%
 
 Hans Rosling is one of the most popular data scientists on the web. His original TED talk set a new bar for data visualization. We are going to create some graphics using his formatted data as our weekly case study. 
 
-Making these plots I learned a lot about ggplot and it's functions.  I also learned about how separating large amounts of data into smaller, easier to understand groupings can really help make the data easier to understand.  
+Making these plots I learned a lot about ggplot and it's functions.  I also learned about how separating large amounts of data into smaller, easier to understand groupings can really help make the data easier to understand.   The hardest part was adding in two datasets on top of each other, and also making sure that I had all the data I needed saved prior to making the plot. 
 
 ### Images
-```{r}
+
+```{r, message =FALSE}
 
 ggplot(data = data_no_kuwait) +
       geom_point(mapping = aes(x = lifeExp, y = gdpPercap, size = pop/100000, color = continent)) +
@@ -49,7 +50,7 @@ ggsave(
   dpi = 300)
 ```
 
-```{r}
+```{r, message =FALSE}
 wa1 %>%
   ggplot() +
   aes(year, gdpPercap, colour = continent) +
@@ -60,5 +61,9 @@ wa1 %>%
   facet_wrap(~continent, nrow = 1) +
   guides(size = guide_legend("Population (100k)", order = 1),
             color = guide_legend("Continent", order = 2))
+ggsave(
+  filename = "GDP & Population Growth by Continent.png",
+  plot = last_plot(),
+  width = 15,
+  dpi = 300)
 ```
-
