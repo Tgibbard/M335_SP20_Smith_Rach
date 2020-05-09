@@ -29,33 +29,82 @@
 library(tidyverse)
 library(nycflights13::flights)
 
-flight_data3 <- (nycflights13::flights) %>%
-  filter(dep_delay != "NA" & arr_delay != "NA", tailnum != "N635AA") %>% 
-  group_by(tailnum, origin) %>% 
-  summarise(delay_mean = mean(dep_delay), arr_mean = mean(arr_delay)) %>% 
-  select(delay_mean, arr_mean, origin, tailnum)
+'''
+In this first plot, I wanted to see how delays and arrivals are aligned.  
+The data appears to increase at a 45 degree angle. This is a pretty boring chart,
+so I did not spend alot of time making it look pretty.  It really just led me to 
+more questions.  Do flights that leave early always arrive early?  Do flights that
+leave late always arrive late?  Is there an airport with a better on time record?
+'''
+flight_c <- nycflights13::flights
 
-ggplot(data = flight_data3, aes(x = arr_mean, y = delay_mean)) +
-  geom_point(size = 1, alpha = 0.25, aes(color = origin))+
-  facet_grid(~origin)
+ggplot(data = flight_c, aes(x = dep_delay, y = arr_delay)) +
+  geom_point()
 
-library(car)
-View(flight_data3)
-differences = flight_data3$arr_mean ~ flight_data3$delay_mean
+ggsave(filename = "Flights Histogram.png",
+       plot = last_plot(),
+       width = 10)
 
-t.test(differences, mu = 0, alternative = "two.sided", conf.level = 0.95)
-qqPlot(differences)
 #[ ] Build bivariate summaries of the relevant variables
+'''
+In this plot, I spent a lot of time trying to decide how best to show the data.
+I wanted to know if flights that departed early always arrived early.  
+ I wanted to know if flights that left late always arrived late and if flights 
+ that left on time always arrived on time.  
+ *The green shows us that flights that left late and arrived on time from EWR. 
+ *The blue shows flights that left late and arrived on time from JFK.
+ *The purple shows flights that left late and arrived on time from LGA.
+ *The pink dots show flights that left early and arrived late. 
+'''
+flight_data_a <- (nycflights13::flights) %>%
+  group_by(origin, tailnum) %>%
+  filter(dep_delay != "NA" & arr_delay != "NA", tailnum != "N635AA") %>% 
+  filter(dep_delay >= 0 & arr_delay <= 0) %>%
+  summarise(delay_median_a = median(dep_delay), arr_median_a = median(arr_delay)) %>% 
+  select(delay_median_a, arr_median_a, origin, tailnum)
+flight_data_a
+
+flight_data_b <- (nycflights13::flights) %>%
+  group_by(origin, tailnum) %>%
+  filter(dep_delay != "NA" & arr_delay != "NA", tailnum != "N635AA") %>% 
+  filter(dep_delay <= 0 & arr_delay >= 0) %>%
+  summarise(delay_median_b = median(dep_delay), arr_median_b = median(arr_delay)) %>% 
+  select(delay_median_b, arr_median_b, origin, tailnum)
+flight_data_b
+
+ggplot(data = flight_data_a, aes(x = (arr_median_a), y = delay_median_a)) +
+  geom_point(size = 1, alpha = 1, aes(color = origin)) +
+  geom_point(data = flight_data_b, size = 1, alpha = 1, aes(x = arr_median_b, y = delay_median_b, color = "black")) +
+  facet_grid(~ origin) +
+  labs(title = "Comparison of Delay Median and Arrival Median at 3 Major Airports",  
+       x = "Arrival Median by Airport", caption = "Pink represents the flights that left early and arrived late.\n The other three colors represent flights that left late and arrive on time. \nNegative values indicate early arrival and early departure.",
+       y = "Delay Median")
+
+ggsave(filename = "Delay_Arrival_Median.png",
+       plot = last_plot(),
+       width = 10
+)
+
+
+
+
+
 
 #[ ] Keep a record of all the code your wrote as you explored the dataset looking for an insightfull relationship
+
+ggplot(data = flight_data3, aes(x = arr_median, y = delay_median)) +
+  geom_point(size = 1, alpha = 0.25, aes(color = c("black")))+
+  facet_grid(~origin) +
+  labs(title = "Comparison of Delay Median and Arrival Median of Airplanes at 3 Major Airports", x = "Arrival Median by Airport", y = "Delay Median")
+
 library(tidyverse)
 library(car)
 library(nycflights13::flights)
 flight_data3 <- (nycflights13::flights) %>%
   filter(dep_delay != "NA" & arr_delay != "NA", tailnum != "N635AA") %>% 
   group_by(tailnum, origin) %>% 
-  summarise(delay_mean = mean(dep_delay), arr_mean = mean(arr_delay)) %>% 
-  select(tailnum, delay_mean, arr_mean, origin, carrier)
+  summarise(delay_median = median(dep_delay), arr_mean = mean(arr_delay)) %>% 
+  select(tailnum, delay_mean, arr_median, origin, carrier)
 
 View(flight_data3)
 differences = flight_data3$arr_mean ~ flight_data3$delay_mean
@@ -65,9 +114,10 @@ qqPlot(differences)
 
 ggplot(data = flight_data3, aes(x = arr_mean, y = delay_mean)) +
   geom_point(aes(color = origin))+
-  facet_grid(~origin)
+  facet_grid(~origin) +
+  labes(title = "Comparison of the Man of Delayed ")
 
-------
+#------
 
 flight_dataa <- (nycflights13::flights) %>%
   group_by(tailnum) %>% 
@@ -82,7 +132,6 @@ flight_data2 <- (nycflights13::flights) %>%
 
 glimpse(flight_data2)
 
-
 flight_data3 <- (nycflights13::flights) %>%
   filter(dep_delay != "NA" & arr_delay != "NA") %>% 
   group_by(tailnum) %>% 
@@ -90,7 +139,3 @@ flight_data3 <- (nycflights13::flights) %>%
   select(tailnum, delay_mean, arr_mean)
 
 glimpse(flight_data3)
-
-#[ ] Create an .R script that has your data visualization development with 1-2 commented paragraphs summarizing your 2 finalized graphics and the choices you made in the data presentation
-#[ ] Save your .png images using of each your final graphics and push all your work to your repository.
-
