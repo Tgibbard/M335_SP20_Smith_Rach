@@ -1,0 +1,102 @@
+---
+title: "Case Study 3"
+author: "Rachael Smith"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:  
+    keep_md: true
+    toc: true
+    toc_float: true
+    code_folding: hide
+    fig_height: 6
+    fig_width: 12
+    fig_align: 'center'
+---
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r load_libraries, include=FALSE}
+# Use this chunk to import your libraries!
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+library(tidyverse)
+library(tidyverse)
+library(DT)
+library(ggplot2)
+library(pander)
+library(nycflights13)
+
+```
+
+```{r load_data}
+# Use this R-Chunk to import all your datasets!
+flight_data_T3 <- nycflights13::flights
+```
+
+## Background
+
+#### Give Your Visualization Wings to Fly
+
+You just started your internship at a big firm in New York, and your manager gave you an extensive file of flights that departed JFK, LGA, or EWR in 2013. Your manager wants you to answer the following questions using data from in nycflights::flights:
+
+1. If I am leaving before noon, which two airlines do you recommend at each airport (JFK, LGA, EWR) that will have the lowest delay time at the 75th percentile?
+
+2. Which origin airport is best to minimize my chances of a late arrival when I am using Delta Airlines?
+
+3. Which destination airport is the worst (you decide on the metric for worst) airport for arrival time?
+
+## Data Wrangling
+
+###### 1. If I am leaving before noon, which two airlines do you recommend at each airport (JFK, LGA, EWR) that will have the lowest delay time at the 75th percentile?
+
+Ultimately I found these summary charts to be the most stratightforward way to quickly see which flights have the lowest delay time in the 75th percentile.  Q3 represents Quartile 3 from a boxplot which is the same as the 75th percentile.  
+
+```{r tidy_data}
+# Trying to determine which 2 airlines have the shortest arrival delays of flights that leave before noon at each airports.
+fltdy1 <- nycflights13::flights %>%
+  select(origin, carrier, dep_delay, arr_delay, dep_time) %>% 
+  filter(dep_time <= 1200 & carrier != "FL" & carrier != "F9") %>% 
+  group_by(origin, carrier) %>%
+  summarise(Q3 = quantile(arr_delay, 0.75, na.rm = T), max = max(arr_delay, na.rm = T)) %>%
+  select(Q3, origin, carrier, max, arr_delay)
+fltdy1
+
+JFK_delay <- fltdy1 %>%
+  filter(origin == "JFK")
+pander(JFK_delay)
+
+EWR_delay <- fltdy1 %>%
+  filter(origin == "EWR")
+pander(EWR_delay)
+
+LGA_delay <- fltdy1 %>%
+  filter(origin == "LGA")
+pander(LGA_delay)
+
+```
+
+## Data Visualization
+
+```{r plot_data}
+# Use this R-Chunk to plot & visualize your data!
+fltdy1a <- nycflights13::flights %>%
+  select(origin, carrier, dep_delay, arr_delay, dep_time) %>% 
+  filter(dep_time <= 1200 & carrier != "FL" & carrier != "F9") %>% 
+  group_by(origin, carrier) %>%
+  select(arr_delay, carrier, origin, dep_time, dep_delay)
+fltdy1a
+
+ggplot(data = fltdy1a, aes(x = carrier, y = arr_delay)) +
+  geom_boxplot() +
+  geom_jitter(inherit.aes = TRUE, height = 0, size = 0.025, alpha = 0.25, aes(color = carrier)) +
+  facet_wrap(~origin, nrow(3)) +
+  labs(title = "Comparison of Arrival Delays by Origin Airport by Carrier", caption = "This chart make little distinction between the arrival delays from the airports, but does give an overall example of the delays that were shown in the data.",
+       x = "Airport Flight Originated From", y = "Arrival Delays in Minutes") +
+  theme_bw() +
+  theme(legend.position = "none")
+
+```
+
+
+## Conclusions
