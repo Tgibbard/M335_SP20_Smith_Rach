@@ -1,0 +1,135 @@
+---
+title: "Case Study 3"
+author: "Rachael Smith"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document: "Case Study 3.html" 
+    keep_md: true
+    toc: true
+    toc_float: true
+    code_folding: hide
+    fig_height: 6
+    fig_width: 12
+    fig_align: 'center'
+---
+
+### Give Your Visualization Wings to Fly
+
+#### Background:
+
+You just started your internship at a big firm in New York, and your manager gave you an extensive file of flights that departed JFK, LGA, or EWR in 2013. Your manager wants you to answer the following questions using data from in nycflights::flights:
+
+1. If I am leaving before noon, which two airlines do you recommend at each airport (JFK, LGA, EWR) that will have the lowest delay time at the 75th percentile?
+
+2. Which origin airport is best to minimize my chances of a late arrival when I am using Delta Airlines?
+
+3. Which destination airport is the worst (you decide on the metric for worst) airport for arrival time?
+
+-----
+#### Analysis
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+library(tidyverse)
+library(DT)
+library(ggplot2)
+library(pander)
+library(nycflights13)
+
+flight_data_T3 <- nycflights13::flights
+```
+
+-----
+
+###### 1. If I am leaving before noon, which two airlines do you recommend at each airport (JFK, LGA, EWR) that will have the lowest delay time at the 75th percentile?
+
+```{r message=FALSE, warning=FALSE}
+
+fdt3 <- flight_data_T3 %>%
+  select(dep_delay, origin, arr_delay) %>% 
+  group_by(origin) %>%
+  summarise(min = min(dep_delay, na.rm = T), Q1 = quantile(dep_delay, 0.25, na.rm = T), median = median(dep_delay, na.rm = T), Q3 = quantile(dep_delay, 0.75, na.rm = T), max = max(dep_delay, na.rm = T))
+
+pander(fdt3)
+
+```
+
+------
+
+```{r}
+fdt3 <- flight_data_T3 %>%
+  select(dep_delay, origin, arr_delay, dep_time) %>% 
+  group_by(origin) %>%
+  summarise(min = min(dep_delay, na.rm = T), Q1 = quantile(dep_delay, 0.25, na.rm = T), median = median(dep_delay, na.rm = T), Q3 = quantile(dep_delay, 0.75, na.rm = T), max = max(dep_delay, na.rm = T))
+
+pander(fdt3)
+```
+
+This chart make little distinction between the departure delays from the airports, but does give an overall example of the delays that were shown in the data.
+
+```{r message=FALSE, warning=FALSE}
+
+flight_6 <- nycflights13::flights %>%
+  select(dep_delay, origin, arr_delay, dep_time, carrier) %>% 
+  filter(dep_time <= 1200 & carrier != "FL" & carrier != "F9") %>% 
+  group_by(origin, carrier) %>%
+  summarise(min = min(arr_delay, na.rm = T), Q1 = quantile(arr_delay, 0.25, na.rm = T), median = median(arr_delay, na.rm = T), Q3 = quantile(arr_delay, 0.75, na.rm = T), max = max(arr_delay, na.rm = T)) %>% 
+  select_all(Q3 <= 0)
+
+pander(flight_6)
+
+flight_7 <- nycflights13::flights %>%
+  select(dep_delay, origin, arr_delay, dep_time, carrier) %>% 
+  filter(dep_time <= 1200 & carrier!= "FL" & carrier != "F9") %>% 
+  group_by(carrier, origin)
+
+ggplot(data = flight_7, aes(x = carrier, y = arr_delay)) +
+  geom_boxplot() +
+  geom_jitter(inherit.aes = TRUE, height = 0, size = 0.025, alpha = 0.25, aes(color = carrier)) +
+  facet_wrap(~origin, nrow(3)) +
+  labs(title = "Comparison of Arrival Delays by Origin Airport by Carrier",
+       x = "Airport Flight Originated From", y = "Departure Delays in Minutes") +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+
+------
+I thought it would be interesting to zero in on flights that were delayed by less than an hour. Each dot represents a single flight in the data.  50% of all flights is contained within the white box, and the solid black line inside the box represents the median.  From this chart, it is easier to see that the median of flights departing from LGA have a lower median delay time than the other two airports.
+
+```{r message=FALSE, warning=FALSE}
+fdt4 <- flight_data_T3 %>%
+  filter(dep_delay <= 60 | arr_delay <= 60) %>% 
+  group_by(origin) %>%
+  select(dep_delay, origin, arr_delay)
+
+ggplot(data = fdt4, aes(x = origin, y = dep_delay)) +
+  geom_boxplot() +
+  geom_jitter(inherit.aes = TRUE, height = 0, size = 0.025, alpha = 0.25, aes(color = origin)) +
+  geom_boxplot() +
+  labs(title = "Comparison of Departure Delay 1 Hour", x = "Airport Flight Originated From", y = "Departure Delays in Minutes") +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+------
+
+This final chart shows us flights that were delayed by less than 30 minutes.  The top of the white box represents the 75th percentile.  This chart helps us to answer our question, that LGA 
+
+```{r message=FALSE, warning=FALSE}
+fdt5 <- flight_data_T3 %>%
+  filter(dep_delay <= 0 & arr_delay <= 60) %>% 
+  group_by(origin) %>%
+  select(dep_delay, origin, arr_delay)
+
+ggplot(data = fdt5) +
+  scatter (aes(x = dep_delay, y = arr_delay)) +
+  facet_grid(~origin) +
+  labs(title = "Flights that Left On-Time that Arrived Late", x = "Airport Flight Originated From", y = "Arrival Delays in Minutes") +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+-----
+
+###### 2. Which origin airport is best to minimize my chances of a late arrival when I am using Delta Airlines?
+
