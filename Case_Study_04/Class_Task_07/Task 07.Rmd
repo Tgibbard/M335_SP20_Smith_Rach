@@ -1,0 +1,102 @@
+---
+title: "Task 7"
+author: "Rachael Smith"
+date: "5/12/2020"
+output: html_document
+---
+
+### What do I do when I get a new dataset Quote:
+
+"I usually color/size the dots in the scatterplots by other variables to see if I can identify any confounding relationships that might screw up analyses downstream."
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readr)
+library(pander)
+library(ggplot2)
+library(readxl)
+library(dplyr)
+
+```
+
+------
+
+### Data Sources 
+
+[ ] Find 3-5 potential data sources (that are free) and document some information about the source
+
+[ ] Build an interactive document that has links to sources with a description of the quality of each
+
+[ ] Build an R script that reads in, formats, and visualizes the data using the principles of exploratory analysis
+
+[ ] Include 2-3 quick visualizations that you used to check the quality of your data
+
+##### School ELA 2013-2017 New York
+
+Dataset found at:
+https://www.kaggle.com/debanjanpaul/school-ela-results-20132017-public/data
+
+Student performance in Exams. Test results from US Students.  As stated on the website, the inspiration to collect the data is: "To understand the influence of the parents background, test preparation etc on students performance."
+
+###### What is the impact on parent education to student test scores?
+
+```{r}
+School_ELA <- read_csv("~/Desktop/Rachael School/MATH335/M335_SP20_Smith_Rach/Case_Study_04/School ELA Results 2013-2017 (Public)_consolidated.csv")
+
+glimpse(School_ELA)
+```
+
+
+##### Historic Pennsylvania Annual Financial Report Data
+
+Dataset found at:
+https://www.kaggle.com/kaggleray/afrdatapa
+
+From website: Pennsylvania requires all school districts, career and technology centers, and charter schools to report an 'Annual Financial Report'. This dataset aims to consolidate and analyze this data. I want people to be able to see how their own school district is doing in relation to other districts in the Commonwealth.
+
+###### How have the school budgets changed over the years?
+
+```{r}
+PA_Finances <- read_excel("~/Desktop/Rachael School/MATH335/M335_SP20_Smith_Rach/Case_Study_04/Finances AIE 9495-1516.xlsx")
+glimpse(PA_Finances)
+```
+
+
+##### Utah Administrator And Teacher Salary And Benefits Charter Schools 2011
+
+Dataset found at:
+https://opendata.utah.gov/Education/Administrator-And-Teacher-Salary-And-Benefits-Char/jf89-w6t9
+
+From Website: Administrator And Teacher Salary And Benefits Charter Schools 2011, provided by Utah State Office of Education.
+
+###### What do charter Schools in Utah typically spend on each of the areas in comparison to each other?
+
+```{r}
+Utah_Schools <- read_csv("~/Desktop/Rachael School/MATH335/M335_SP20_Smith_Rach/Case_Study_04/Administrator_And_Teacher_Salary_And_Benefits_Charter_Schools_2011.csv")
+glimpse(Utah_Schools)
+```
+
+------
+
+### Tips for Reading in Data
+
+[ ] Write a short summary of the read in process and some coding secrets you learned
+
+An easy tip to read in data is to make sure you first set your working directory to your source file location.  Then using your Files Tab, you can scroll to the data, right click it and choose "import dataset..."  A window will pop open that will show you what your data looks like, how it is going to be imported, how the columns will be labeled etc.  You can choose any column and edit the caterogry you want it to use.  With dates, you can format the date correctly using the % codes, and spaces or punctuation.  Then on the bottom left, it will show you a code preview that you can paste directly into your R-script to load the dataset with the corrected labels. 
+
+------
+
+### Limitations
+
+[ ] Summarize the limitations of your final compiled data in addressing your original question
+
+------
+
+### Alternative Questions
+
+[ ] After formatting your data identify any follow on or alternate questions that you could use for your project
+
+I think I could do a lot with enrollment data, and school finances or state standardized testing.   
+
+I also 

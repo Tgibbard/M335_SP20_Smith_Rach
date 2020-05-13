@@ -1,0 +1,153 @@
+---
+title: "Task 7"
+author: "Rachael Smith"
+date: "5/12/2020"
+output: html_document
+---
+
+### What do I do when I get a new dataset Quote:
+
+"I usually color/size the dots in the scatterplots by other variables to see if I can identify any confounding relationships that might screw up analyses downstream."
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readr)
+library(pander)
+library(ggplot2)
+library(readxl)
+library(ggrepel)
+```
+------
+
+### Data Sources 
+
+[ ] Find 3-5 potential data sources (that are free) and document some information about the source
+
+[ ] Build an interactive document that has links to sources with a description of the quality of each
+
+[ ] Build an R script that reads in, formats, and visualizes the data using the principles of exploratory analysis
+
+[ ] Include 2-3 quick visualizations that you used to check the quality of your data
+
+------
+
+##### School ELA 2013-2017 New York
+
+Dataset found at:
+https://www.kaggle.com/debanjanpaul/school-ela-results-20132017-public/data
+
+Student performance in Exams. Test results from US Students.  As stated on the website, the inspiration to collect the data is: "To understand the influence of the parents background, test preparation etc on students performance."
+
+###### What is the impact on parent education to student test scores?
+
+```{r message=FALSE, warning=FALSE}
+School_ELA <- School_ELA <- read_csv("~/Desktop/Rachael School/MATH335/M335_SP20_Smith_Rach/Case_Study_04/School ELA Results 2013-2017 (Public)_consolidated.csv", 
+    col_types = cols(`Level 1#` = col_number(), 
+        `Level 1%` = col_number(), `Level 2#` = col_number(), 
+        `Level 2%` = col_number(), `Level 3#` = col_number(), 
+        `Level 3%` = col_number(), `Level 3+4#` = col_number(), 
+        `Level 3+4%` = col_number(), `Level 4#` = col_number(), 
+        `Level 4%` = col_number(), `Mean Scale Score` = col_number(), 
+        `Number Tested` = col_number(), Year = col_date(format = "%Y")))
+glimpse(School_ELA)
+
+School_ELA <- School_ELA %>% 
+  group_by(Year)
+
+ggplot(data= School_ELA, aes(x = `Mean Scale Score`, size = `Number Tested`))+
+  geom_boxplot()
+
+
+```
+
+
+------
+
+##### Historic Pennsylvania Annual Financial Report Data
+
+Dataset found at:
+https://www.kaggle.com/kaggleray/afrdatapa
+
+From website: Pennsylvania requires all school districts, career and technology centers, and charter schools to report an 'Annual Financial Report'. This dataset aims to consolidate and analyze this data. I want people to be able to see how their own school district is doing in relation to other districts in the Commonwealth.
+
+###### How have the school budgets changed over the years?
+
+```{r message=FALSE, warning=FALSE}
+PA_Finance1 <- read_excel("~/Desktop/Rachael School/MATH335/M335_SP20_Smith_Rach/Case_Study_04/Finances AIE 9495-1516.xlsx", col_names = c("AUD", "SD", "County", date = 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997, 1996, 1995, 1994), skip = 1)
+PA_Finance1
+
+PA_Finance1 %>% 
+  group_by(County)
+
+ggplot(data = PA_Finance1, aes(x = County, color = County)) +
+  geom_bar()+
+  labs(x = "Charter School", title = "PA Charter Schools By County", y = "Number of Schools per County") +
+  theme(axis.text.x = element_blank(), legend.position = "bottom")
+
+```
+
+------
+
+##### Utah Administrator And Teacher Salary And Benefits Charter Schools 2011
+
+Dataset found at:
+https://opendata.utah.gov/Education/Administrator-And-Teacher-Salary-And-Benefits-Char/jf89-w6t9
+
+From Website: Administrator And Teacher Salary And Benefits Charter Schools 2011, provided by Utah State Office of Education.
+
+###### What do charter Schools in Utah typically spend on each of the areas in comparison to each other?
+
+```{r message=FALSE, warning=FALSE}
+
+Utah_Schools <- read_csv("~/Desktop/Rachael School/MATH335/M335_SP20_Smith_Rach/Case_Study_04/Administrator_And_Teacher_Salary_And_Benefits_Charter_Schools_2011.csv")
+
+glimpse(Utah_Schools)
+
+Utah_Schools <- Utah_Schools %>% 
+  group_by(`CHARTER SCHOOL`) %>% 
+  filter(`School Administrators' Median Salary` >= 80000) %>% 
+  select(`School Administrators' Median Salary`, `CHARTER SCHOOL`, `Total Compensation`)
+
+ggplot(data=Utah_Schools, aes(x =fct_reorder(`CHARTER SCHOOL`,`School Administrators' Median Salary`, .desc=FALSE), y = `School Administrators' Median Salary`, name = `CHARTER SCHOOL`))+
+  geom_point(size = 2, alpha = 0.6) +
+  theme_bw()+
+  geom_label_repel(aes(label = `CHARTER SCHOOL`),
+                  box.padding   = 0.35, 
+                  point.padding = 0.5,
+                  segment.color = 'grey50') +
+  labs(x = "Charter School", title = "Utah Charter School Administrator Salaries >= $80000") +
+  scale_y_continuous(name = "Salary Amount in USD", limits = c(75000, 110000))+
+  theme(axis.text.x = element_blank())
+  
+```
+
+------
+
+### Tips for Reading in Data
+
+[ ] Write a short summary of the read in process and some coding secrets you learned
+
+An easy tip to read in data is to make sure you first set your working directory to your source file location.  Then using your Files Tab, you can scroll to the data, right click it and choose "import dataset..."  A window will pop open that will show you what your data looks like, how it is going to be imported, how the columns will be labeled etc.  You can choose any column and edit the caterogry you want it to use.  With dates, you can format the date correctly using the % codes, and spaces or punctuation.  Then on the bottom left, it will show you a code preview that you can paste directly into your R-script to load the dataset with the corrected labels. 
+
+------
+
+### Limitations
+
+[ ] Summarize the limitations of your final compiled data in addressing your original question
+
+I think that I am still left wondering if there are meaningful ways to measure student growth besides test scores and finances.  Those seem to be the most readily available.
+
+I could not for the life of me figure out how to make the PA Financial Data headers as dates, while the rows were financial values.  I spent probably 2 hours changing the names of the columns and tyring to put the years as dates, with no luck.  I could not find a meaninful way to express this data.
+
+It was really hard to try to narrow down schools that were similar, but I think I would want to dig into the data more in smaller amounts to see if I can find correlations.  It was very difficult with the number of data points to make any good decisions, even after hours of work.  I think trying to filter the data into smaller groups would be helpful, it will also be challanging to figure out how to group the data without skewing it.
+
+------
+
+### Alternative Questions
+
+[ ] After formatting your data identify any follow on or alternate questions that you could use for your project
+
+I think I could do a lot with enrollment data, and school finances or state standardized testing.  I am hopeful that I can learn some trends about schools after looking at this data better.  I think there is a lot to learn and see what I can learn from the data.  
+
+I did find some other resources of data that I coudl import manually, and that might be my best bet for my project.
