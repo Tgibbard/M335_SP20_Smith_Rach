@@ -16,6 +16,10 @@ output:
 Child Mortality and Life Expectancy by country data from:
 https://ourworldindata.org/financing-healthcare/
 
+I created these maps by referencing this site:
+https://www.datanovia.com/en/blog/how-to-create-a-map-using-ggplot2/
+
+
 
 
 ```r
@@ -111,5 +115,9 @@ ggplot(data = plot_2010, aes(map_id = region, fill = lifeExp)) +
 ## Conclusions
 
 There have been considerable changes in infant mortality rates over the past 100 years.  There have also been considerable increased life expectancy over the past 50 years.
+
+This was my biggest challenge yet.  I spent many hours trying to get this to work, without knowing if I would ever get it to work.  There was so much data collected, I had to look through and determine which years had enough data to make it worth it.
+
+When I finally got the map loaded, it felt like magic!  But a lot of countries were misisng, including the US, a few african countries, greenland, etc.  I had to look at maps of the various countries to see if I could figure out which country it was, and why it was missing.  In many cases, countries were missing because there wasn't data but in some cases, it was also because the two datasets used different names for the countries.  For example, the financial health dataset used United States, and the world map used USA.
 
 In conclusion, these graphs were a lot of work and a fun learning project. however I do think there are probably more efficient ways to show the data.  I was limited to a discrete year variable with this data, it would have been helpful to use a range or spend more time showing more than a single year.
