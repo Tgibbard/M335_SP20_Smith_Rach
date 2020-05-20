@@ -35,34 +35,23 @@ Reading in the DOW data with 5 different comonly known file types.
 
 rds_file <- read_rds(url("https://github.com/byuistats/data/raw/master/Dart_Expert_Dow_6month_anova/Dart_Expert_Dow_6month_anova.RDS"))
 
-pander(head(rds_file, 10))
+pander(head(rds_file, 5))
 ```
 
 
------------------------------------------------
-       contest_period         variable   value 
----------------------------- ---------- -------
-      January-June1990          PROS     12.7  
+----------------------------------------
+   contest_period      variable   value 
+--------------------- ---------- -------
+  January-June1990       PROS     12.7  
 
-     February-July1990          PROS     26.4  
+  February-July1990      PROS     26.4  
 
-      March-August1990          PROS      2.5  
+  March-August1990       PROS      2.5  
 
-    April-September1990         PROS      -20  
+ April-September1990     PROS      -20  
 
-      May-October1990           PROS     -37.8 
-
-     June-November1990          PROS     -33.3 
-
-     July-December1990          PROS     -10.2 
-
-   August1990-January1991       PROS     -20.3 
-
- September1990-February1991     PROS     38.9  
-
-   October1990-March1991        PROS     20.2  
------------------------------------------------
-
+   May-October1990       PROS     -37.8 
+----------------------------------------
 
 ##### CSV File
 
@@ -72,33 +61,23 @@ pander(head(rds_file, 10))
 
 csv_file <- read_csv("https://raw.githubusercontent.com/byuistats/data/master/Dart_Expert_Dow_6month_anova/Dart_Expert_Dow_6month_anova.csv")
 
-pander(head(csv_file, 10))
+pander(head(csv_file, 5))
 ```
 
 
------------------------------------------------
-       contest_period         variable   value 
----------------------------- ---------- -------
-      January-June1990          PROS     12.7  
+----------------------------------------
+   contest_period      variable   value 
+--------------------- ---------- -------
+  January-June1990       PROS     12.7  
 
-     February-July1990          PROS     26.4  
+  February-July1990      PROS     26.4  
 
-      March-August1990          PROS      2.5  
+  March-August1990       PROS      2.5  
 
-    April-September1990         PROS      -20  
+ April-September1990     PROS      -20  
 
-      May-October1990           PROS     -37.8 
-
-     June-November1990          PROS     -33.3 
-
-     July-December1990          PROS     -10.2 
-
-   August1990-January1991       PROS     -20.3 
-
- September1990-February1991     PROS     38.9  
-
-   October1990-March1991        PROS     20.2  
------------------------------------------------
+   May-October1990       PROS     -37.8 
+----------------------------------------
 
 ##### DTA File
 
@@ -108,33 +87,23 @@ pander(head(csv_file, 10))
 
 dta_file <- read_dta("https://github.com/byuistats/data/raw/master/Dart_Expert_Dow_6month_anova/Dart_Expert_Dow_6month_anova.dta")
 
-pander(head(dta_file, 10))
+pander(head(dta_file, 5))
 ```
 
 
------------------------------------------------
-       contest_period         variable   value 
----------------------------- ---------- -------
-      January-June1990          PROS     12.7  
+----------------------------------------
+   contest_period      variable   value 
+--------------------- ---------- -------
+  January-June1990       PROS     12.7  
 
-     February-July1990          PROS     26.4  
+  February-July1990      PROS     26.4  
 
-      March-August1990          PROS      2.5  
+  March-August1990       PROS      2.5  
 
-    April-September1990         PROS      -20  
+ April-September1990     PROS      -20  
 
-      May-October1990           PROS     -37.8 
-
-     June-November1990          PROS     -33.3 
-
-     July-December1990          PROS     -10.2 
-
-   August1990-January1991       PROS     -20.3 
-
- September1990-February1991     PROS     38.9  
-
-   October1990-March1991        PROS     20.2  
------------------------------------------------
+   May-October1990       PROS     -37.8 
+----------------------------------------
 
 ##### SAV File
 
@@ -144,33 +113,23 @@ pander(head(dta_file, 10))
 
 sav_file <- read_sav("https://github.com/byuistats/data/blob/master/Dart_Expert_Dow_6month_anova/Dart_Expert_Dow_6month_anova.sav?raw=true")
 
-pander(head(sav_file, 10))
+pander(head(sav_file, 5))
 ```
 
 
------------------------------------------------
-       contest_period         variable   value 
----------------------------- ---------- -------
-      January-June1990          PROS     12.7  
+----------------------------------------
+   contest_period      variable   value 
+--------------------- ---------- -------
+  January-June1990       PROS     12.7  
 
-     February-July1990          PROS     26.4  
+  February-July1990      PROS     26.4  
 
-      March-August1990          PROS      2.5  
+  March-August1990       PROS      2.5  
 
-    April-September1990         PROS      -20  
+ April-September1990     PROS      -20  
 
-      May-October1990           PROS     -37.8 
-
-     June-November1990          PROS     -33.3 
-
-     July-December1990          PROS     -10.2 
-
-   August1990-January1991       PROS     -20.3 
-
- September1990-February1991     PROS     38.9  
-
-   October1990-March1991        PROS     20.2  
------------------------------------------------
+   May-October1990       PROS     -37.8 
+----------------------------------------
 
 ##### XLSX File
 
@@ -184,33 +143,23 @@ download("https://github.com/byuistats/data/blob/master/Dart_Expert_Dow_6month_a
 
 xlsx_file <- read_xlsx(tmpx)
 
-pander(head(xlsx_file, 10))
+pander(head(xlsx_file, 5))
 ```
 
 
------------------------------------------------
-       contest_period         variable   value 
----------------------------- ---------- -------
-      January-June1990          PROS     12.7  
+----------------------------------------
+   contest_period      variable   value 
+--------------------- ---------- -------
+  January-June1990       PROS     12.7  
 
-     February-July1990          PROS     26.4  
+  February-July1990      PROS     26.4  
 
-      March-August1990          PROS      2.5  
+  March-August1990       PROS      2.5  
 
-    April-September1990         PROS      -20  
+ April-September1990     PROS      -20  
 
-      May-October1990           PROS     -37.8 
-
-     June-November1990          PROS     -33.3 
-
-     July-December1990          PROS     -10.2 
-
-   August1990-January1991       PROS     -20.3 
-
- September1990-February1991     PROS     38.9  
-
-   October1990-March1991        PROS     20.2  
------------------------------------------------
+   May-October1990       PROS     -37.8 
+----------------------------------------
 
 ### Check All Files Are Equal
 
