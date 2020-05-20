@@ -40,7 +40,9 @@ Reading in the DOW data with 5 different comonly known file types.
 
 ### Import Different File Types
 
-##### RDS File
+
+###### RDS File
+
 
 ```{r}
 # Read in the rds file
@@ -52,7 +54,9 @@ pander(head(rds_file, 5))
 
 ```
 
-##### CSV File
+
+###### CSV File
+
 
 ```{r plot_data}
 # Read in the CSV file
@@ -64,7 +68,9 @@ pander(head(csv_file, 5))
 
 ```
 
-##### DTA File
+
+###### DTA File
+
 
 ```{r}
 # Read in the dta file
@@ -76,7 +82,9 @@ pander(head(dta_file, 5))
 
 ```
 
-##### SAV File
+
+###### SAV File
+
 
 ```{r tidy_data}
 # Read in the sav file
@@ -88,7 +96,8 @@ pander(head(sav_file, 5))
 
 ```
 
-##### XLSX File
+
+###### XLSX File
 
 ```{r}
 # Read in the xlsx file
@@ -104,7 +113,10 @@ pander(head(xlsx_file, 5))
 
 ```
 
+
+
 ### Check All Files Are Equal
+
 
 ```{r message=FALSE, warning=FALSE}
 all.equal(rds_file, csv_file)
@@ -117,6 +129,7 @@ all.equal(rds_file, xlsx_file)
 -----
 
 ### Graphic
+
 
 ```{r}
 stock <- csv_file %>%

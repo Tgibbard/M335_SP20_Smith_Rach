@@ -27,7 +27,9 @@ Reading in the DOW data with 5 different comonly known file types.
 
 ### Import Different File Types
 
-##### RDS File
+
+###### RDS File
+
 
 
 ```r
@@ -53,7 +55,9 @@ pander(head(rds_file, 5))
    May-October1990       PROS     -37.8 
 ----------------------------------------
 
-##### CSV File
+
+###### CSV File
+
 
 
 ```r
@@ -79,7 +83,9 @@ pander(head(csv_file, 5))
    May-October1990       PROS     -37.8 
 ----------------------------------------
 
-##### DTA File
+
+###### DTA File
+
 
 
 ```r
@@ -105,7 +111,9 @@ pander(head(dta_file, 5))
    May-October1990       PROS     -37.8 
 ----------------------------------------
 
-##### SAV File
+
+###### SAV File
+
 
 
 ```r
@@ -131,7 +139,8 @@ pander(head(sav_file, 5))
    May-October1990       PROS     -37.8 
 ----------------------------------------
 
-##### XLSX File
+
+###### XLSX File
 
 
 ```r
@@ -161,7 +170,10 @@ pander(head(xlsx_file, 5))
    May-October1990       PROS     -37.8 
 ----------------------------------------
 
+
+
 ### Check All Files Are Equal
+
 
 
 ```r
@@ -199,6 +211,7 @@ all.equal(rds_file, xlsx_file)
 -----
 
 ### Graphic
+
 
 
 ```r
