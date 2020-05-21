@@ -1,0 +1,89 @@
+---
+title: "Lesson 10, forcats Class Activity"
+author: "David Palmer"
+date: "5/20/2020"
+output: html_document
+---
+
+This activity should be completed with a group. Take time to answer each question verbally and create working code that you understand.
+
+One person should be nominated as **the typer**. They will have Rstudio open and share their screen. They cannot type anything unless they are told to. They can ask questions for clarification, but otherwise should leave the problem solving up to other team members. Someone who feels the least confident in their R skills may want to fill this role. Alternatively, someone feels they already have mastered these coding topics would also be well suited for this role.
+
+The other two members of the group are the **researchers and problem solvers. They CANNOT run anything** in the console, except commands starting with ?. They must tell the type what to type.
+
+As you go through the activity, feel free to call me into your breakout room, OR pop out to the main room to ask a quick question.
+
+At the start of each new activity, you may want to re-evaluate who is filling which roles and change it up to keep your level of engagement high.
+
+## ordering a factor variable
+
+One of the primary benefits of treating a variable as a factor, instead of string, is that you can control the order of the levels, and you can easily combine/manipulate the levels.
+
+Instructions:
+- Be sure tidyverse is loaded (including forecats package)
+- We will use the gss_cat dataset
+- Use fct_relevel() to overwrite the religion variable with a new religion variable that has "Native american" and "Jewish" as the first two levels.
+
+```{r}
+library(tidyverse)
+gss_cat %>% 
+  mutate(relig = fct_relevel(relig, "Native american", "Jewish")) %>% 
+  pull(relig) %>% 
+  levels()
+
+```
+
+Note: pull() returns the column as a vector, which is what levels needs, instead of keeping a dataframe object like select() does
+
+## Order a new variable
+
+When creating a factor variable from scratch or from a column that is not already a factor you can specify the levels or use the default. Run the following code and discuss the questions within your group.
+
+```{r}
+gss_cat %>% mutate(year = factor(year)) %>% pull(year) %>% levels() #default
+```
+
+* What are the default levels when using factor()? How is their order determined?
+
+```{r}
+gss_cat %>% 
+  mutate(year_factor = factor(year, levels = c("2012", "2008", "2010"))) %>% summary() #specified levels
+```
+
+* Compare year_factor and year in the output. What do you notice?
+* What are the pros and cons of using fct_relevel() vs. factor()?
+
+## Other useful forecats functions
+
+Read the help file or the forecats cheat sheet to learn about the functions below. Then complete the following exercises.
+Cheat sheets: https://rstudio.com/resources/cheatsheets/
+
+- fct_reorder() and fct_reorder2()
+- fct_recode()
+- fct_infreq()
+- fct_lump()
+
+**Exercises**
+- Put the Year-Semester in the correct order in your graph of RCW (see day_10_activity for tidy)
+- Try using some combination of the commands above and the gss_cat dataset to recreate the chart located here: https://byuistats.github.io/M335/docs/presentations_class_palmer/day_10_files/relig_plot.png
+
+
+
+## On a completely new topic: unzip()
+
+Leaving the land of categorical data, discuss the following code and ensure you know what each line does
+
+```{r}
+bob <- tempfile()
+bob_dir <- tempdir()
+
+download("https://byuistats.github.io/BYUI_M221_Book/Data/ExcelSpreadsheets.zip",
+destfile = bob, mode = "wb")
+
+unzip(bob, exdir = bob_dir)
+read_excel(paste(bob_dir, "QuantitativeDescriptiveStatistics.xlsx", sep = "\\"))
+
+#It's not a pretty datafile, so there are a lot of issues and red
+```
+
+Return to class

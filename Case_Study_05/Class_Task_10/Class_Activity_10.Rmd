@@ -1,0 +1,108 @@
+---
+title: "Lesson 10, tidyr Class Activity"
+author: "David Palmer"
+date: "5/20/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This activity should be completed with a group. Take time to answer each question verbally and create working code that you understand.
+
+One person should be nominated as **the typer**. They will have Rstudio open and share their screen. They cannot type anything unless they are told to. They can ask questions for clarification, but otherwise should leave the problem solving up to other team members. Someone who feels the least confident in their R skills may want to fill this role. Alternatively, someone feels they already have mastered these coding topics would also be well suited for this role.
+
+The other two members of the group are the **researchers and problem solvers. They CANNOT run anything** in the console, except commands starting with ?. They must tell the type what to type.
+
+As you go through the activity, feel free to call me into your breakout room, OR pop out to the main room to ask a quick question.
+
+## Start
+
+We will be analyzing the R&CW data again from an earlier task. Our goal is to see how many projects come from which departents over time.
+
+To start run this code to read in the data:
+
+```{r echo=TRUE, eval=FALSE}
+library(tidyverse)
+
+dat <- read_csv("https://byuistats.github.io/M335/data/rcw_reshape.csv")
+```
+
+Is the data in long or wide format?
+
+## Go wide
+
+Instructions:
+1. Using what you learned in the reading, convert the data to wide format (one column per Department) and save it under a new name
+2. Now convert the wide dataset back to long format
+
+```{r wide_v_long}
+#convert it to wide here
+widedat <- dat %>%
+  pivot_wider(names_from = Department, values_from = Count)
+
+#now convert the wide data back to long format
+longdat <- dat %>%
+  pivot_longer(cols = c("Chem","CSEE","DCM","GEO","Math","ME","PHY"), names_to = "Department", values_to = "Count")
+
+```
+
+
+Discussion/Observation:
+
+* How many rows does the new long format have?  (42 rows)
+* How does that compare with the original data? Why? (35 rows, because we have NA values)
+* What argument in pivot_longer() could you change so that the "new" long format data matches the data you originally read in.
+*Discuss: When might you want to make implicit NA's explicit? Why would you not?
+
+Implicit = tidy data, skipped over
+Explicit = Data with NAs
+
+## Diving deeper into implicit/explicit missing values
+
+Instructions:
+3. Explore the following related functions/arguments, make notes as desired
+  - within pivot_wider( value_fill = 0)
+  - within pivot_longer( values_drop_na = )
+  - complete()
+  - expand()
+  
+4. Using one (or more) of these commands, edit the original dataset so that the implicit missing values are made explicit; and instead of a missing value for "Count" they have zeros.  Save this dataset as zeros.
+
+```{r zeros}
+
+zeros <- dat %>%
+  pivot_wider(names_from = Department, values_from = Count, values_fill = list(Count = 0)) %>%
+  pivot_longer(cols = c("Chem","CSEE","DCM","GEO","Math","ME","PHY"), names_to = "Department", values_to = "Count", values_drop_na = TRUE)
+
+zeros
+```
+
+
+## Practice separate() and unite()
+
+Starting with your zeros data:
+
+5. Take Semester_Date column and separate it into a year, month, and day columns.
+6. unite() the Year and Semester columns for potentially easier labelling of the graphic. (I actually prefer using paste() instead of unite(), so you could get familiar with that command as well)
+7. Now create a line chart that shows the combined Year-Semester variable along the x axis and the count of projects on the y axis for each department.
+
+```{r separate}
+sem_dat <- zeros %>%
+  separate(Semester_Date, into = c("Month", "Day","Year"), sep = "/") %>%
+  unite(col = "Yr_Sem", c(Year, Semester) ,sep = "-") %>%
+  mutate(Yr_Sem = fct_inorder(Yr_Sem))
+
+sem_Dat
+
+ggplot(data = sem_dat, mapping = aes(x=Yr_Sem, y = Count, color = Department, group = Department))+
+  geom_line()
+
+```
+
+You may notice that the semesters are out of chronological order. That is because the new combined column of year and semester is probably being treated as a character vector, which will always be in alphabetical order.
+
+We want to make the Year-Semester column a factor so that we can control/specify the order of the levels. We will use the forecats packages for that
+
+RETURN TO CLASS BEFORE PROCEEDING with the categorical data activity.

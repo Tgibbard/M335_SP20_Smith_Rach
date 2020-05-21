@@ -1,0 +1,65 @@
+---
+title: "Case Study 5"
+author: "Rachael Smith"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:  
+    keep_md: true
+    toc: true
+    toc_float: true
+    code_folding: hide
+    fig_height: 6
+    fig_width: 12
+    fig_align: 'center'
+---
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## (Heights) I Can Clean Your Data
+
+```{r load_libraries, include=FALSE}
+# Use this R-Chunk to load all your libraries!
+#install.packages("tidyverse") # run this line once in console to get package
+
+library(tidyverse)
+library(haven)
+library(readr)
+library(foreign)
+library(readxl)
+library(downloader)
+
+```
+
+```{r load_data}
+# Use this R-Chunk to import all your datasets!
+
+```
+
+## Background
+
+_Place Task Background Here_
+
+## Data Wrangling
+
+```{r tidy_data}
+# Use this R-Chunk to clean & wrangle your data!
+
+world_tmpx <- tempfile()
+
+download("https://byuistats.github.io/M335/data/heights/Height.xlsx", world_tmpx, mode = "wb")
+
+world_xlsx <- read_xlsx(world_tmpx)
+
+View(world_xlsx)
+```
+
+## Data Visualization
+
+```{r plot_data}
+# Use this R-Chunk to plot & visualize your data!
+
+```
+
+## Conclusions
