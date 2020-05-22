@@ -57,19 +57,56 @@ pander(head(xlsx_file, 5))
 tidy_contest <- xlsx_file %>%
   separate(contest_period, into = c("start", "end"), sep = "-") %>%
   mutate(year_end = substr(end, nchar(end) - 3, nchar(end))) %>% 
-  separate(end, into = "month_end", sep = -4) %>% 
-  select(month_end, year_end, value, variable)
+  separate(end, into = "Month", sep = -4) %>% 
+  mutate(
+    Month = replace(Month, Month == "Dec.", "December"),
+    Month = replace(Month, Month == "Febuary", "February"))
   
 pander(head(tidy_contest,10))
-
 saveRDS(tidy_contest, file = "tidy_contest.rds")
+
 ```
 
-## Data Visualization
+### Data Visualization
+
+```{r}
+
+tidy_contest2 <- tidy_contest %>% 
+  group_by(year_end, variable) %>%
+  summarise(value = sum(value)) %>%
+  select(year_end, value, variable)
+
+tidy_contest3 <- tidy_contest2 %>% 
+  filter(variable != "DJIA")
+
+tidy_contest4 <- tidy_contest2 %>% 
+  filter(variable == "DJIA")
+
+ggplot(data = tidy_contest3, aes(x = year_end, y = value, color = variable, group = variable)) +
+  geom_point() +
+  geom_line(aes(group = variable))+
+  geom_point(data = tidy_contest4, size  = 2.0) +
+  geom_line(data = tidy_contest4, size = 2.0) +
+  labs(title = "Time Series Plot of 6 Month Returns", x = "Years", y = "Return Value", color = "Stocks")+
+  theme_bw()
+```
+
+This table shows the change in values for the DJIA, DARTS, and PROS stocks from 1990 to 1998.  This chart shows the overall change of the stock values from year to year.  The DJIA spread is much smaller than the spread of the other two stocks, while still showing a significant increase over the 9 year period.
+
+### Data Table
 
 ```{r plot_data}
 # Use this R-Chunk to plot & visualize your data!
 
+wide_contest <- tidy_contest %>%
+  filter(variable == "DJIA") %>%
+  select(-variable, -start) %>% 
+  pivot_wider(values_from = value, names_from = year_end) %>%
+  mutate(Month = fct_relevel(Month, month.name)) %>% 
+  arrange(Month)
+
+pander(wide_contest)
+
 ```
 
-## Conclusions
+This is the data used to create the chart above. This table shows us the actual values of the DJIA stock from month to month over the course of the 9 years.  You can see that viewing the data in this format, it is much more difficult to see the change in data over time.  It does however help you to be able to view the actual values as needed.
