@@ -13,6 +13,8 @@ output:
     fig_align: 'center'
 ---
 
+-----
+
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
@@ -26,10 +28,15 @@ library(tidyr)
 library(tidyverse)
 library(pander)
 library(stringr)
+library(downloader)
+library(readxl)
 ```
+
+#### Read-in the data
 
 ```{r load_data}
 # Use this R-Chunk to import all your datasets!
+
 tmpx <- tempfile()
 
 download("https://github.com/byuistats/data/blob/master/Dart_Expert_Dow_6month_anova/Dart_Expert_Dow_6month_anova.xlsx?raw=true", tmpx, mode = "wb")
@@ -37,34 +44,25 @@ download("https://github.com/byuistats/data/blob/master/Dart_Expert_Dow_6month_a
 xlsx_file <- read_xlsx(tmpx)
 
 pander(head(xlsx_file, 5))
-  
-sep_xl <- xlsx_file %>%
-  separate(contest_period, into = c("start", "end"), sep = "-") %>%
-  mutate(end_year = substr(end, nchar(end)-3, nchar(end)))
 
-View(sep_xl)
-
-
-  
 ```
 
+-----
 
-## Background
-
-_Place Task Background Here_
-
-## Data Wrangling
+#### Tidy the Data
 
 ```{r tidy_data}
 # Use this R-Chunk to clean & wrangle your data!
-timeline <- tibble(
-  year = c(1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998),
-  month = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")) %>% 
-  pivot_wider(months_end = months, year_end = year)
 
-time_end <- sep_xl %>% 
-  mutate(month_end = "month_end", year = "year_end")
-time_end
+tidy_contest <- xlsx_file %>%
+  separate(contest_period, into = c("start", "end"), sep = "-") %>%
+  mutate(year_end = substr(end, nchar(end) - 3, nchar(end))) %>% 
+  separate(end, into = "month_end", sep = -4) %>% 
+  select(month_end, year_end, value, variable)
+  
+pander(head(tidy_contest,10))
+
+saveRDS(tidy_contest, file = "tidy_contest.rds")
 ```
 
 ## Data Visualization

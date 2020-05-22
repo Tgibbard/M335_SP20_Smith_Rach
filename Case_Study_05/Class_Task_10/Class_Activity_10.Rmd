@@ -27,6 +27,8 @@ To start run this code to read in the data:
 library(tidyverse)
 
 dat <- read_csv("https://byuistats.github.io/M335/data/rcw_reshape.csv")
+
+
 ```
 
 Is the data in long or wide format?
@@ -44,7 +46,7 @@ widedat <- dat %>%
 
 #now convert the wide data back to long format
 longdat <- dat %>%
-  pivot_longer(cols = c("Chem","CSEE","DCM","GEO","Math","ME","PHY"), names_to = "Department", values_to = "Count")
+  pivot_longer(cols = c("CHEM","CSEE","DCM","GEO","Math","ME","PHY"), names_to = "Department", values_to = "Count")
 
 ```
 

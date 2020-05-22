@@ -46,13 +46,19 @@ _Place Task Background Here_
 ```{r tidy_data}
 # Use this R-Chunk to clean & wrangle your data!
 
-world_tmpx <- tempfile()
+Height <- read_excel("Case_Study_05/Height.xlsx", skip = 2)
+View(Height)
 
-download("https://byuistats.github.io/M335/data/heights/Height.xlsx", world_tmpx, mode = "wb")
+Height2 = Height[,grepl("_0$", names(Height))]
+View(Height2)
 
-world_xlsx <- read_xlsx(world_tmpx)
 
-View(world_xlsx)
+Height2 <- Height %>% 
+  pivot_longer(c(1810, 1820, 1830, 1840, 1850, 1860, 1870, 1880, `1890`, `1900`, `1910`, `1920`, `1930`, `1940`, `1950`, `1960`, `1970`, `1980`, `1990`), names_to = "year_decade", values_to "height.cm")
+
+View(Height2)
+  
+     
 ```
 
 ## Data Visualization
