@@ -183,7 +183,8 @@ pander(head(alld,10))
 ```r
 ggplot(data = alld, mapping = aes(x = birth_year, y = height.in, color = study)) +
   geom_boxplot() +
-  geom_jitter(height = 0, alpha = 0.25, size = .25)
+  geom_jitter(height = 0, alpha = 0.25, size = .25)+
+  labs(x= "Male Growth by Decade", y = "Male Height in Inches", title = "Comparison of Male Height Over the Past Century", subtitle = "Using multiple datasets and studies", color= "Study")
 ```
 
 ![](Case-Study-5_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
