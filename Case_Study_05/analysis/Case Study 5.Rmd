@@ -177,6 +177,14 @@ ggplot(data = alld, mapping = aes(x = study, y = height.in, color = study)) +
 
 ```
 
+```{r}
+ggplot(data = alld, mapping = aes(x = birth_year, y = height.in, color = study)) +
+  geom_boxplot() +
+  geom_jitter(height = 0, alpha = 0.25, size = .25)+
+  labs(x= "Male Growth by Decade", y = "Male Height in Inches", title = "Comparison of Male Height Over the Past Century", subtitle = "Using multiple datasets and studies", color= "Study")
+```
+
+
 ### Part 3
 
 I feel like this data was very interesting to work with.  This was the first time we combined several datasets of different formats into a single dataset.  I can see how using a variety of data and sources could really add to the accuracy of a project, while also increaseing the complexity and pre-processing time substantially. I think the most time consuming part was simply trying to make the data match and making sure that I wasn't manipulating the results.
