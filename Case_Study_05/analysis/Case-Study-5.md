@@ -29,8 +29,6 @@ Height2 <- remove_empty(Height, which = c("rows", "cols"), quiet = TRUE)
 
 
 ```r
-# Use this R-Chunk to clean & wrangle your data!
-
 long_height2 <- Height2 %>%
   rename("country" = `Continent, Region, Country`) %>%
   pivot_longer(cols = c(3:20), names_to = "decade2", values_to = "height.cm") %>%
@@ -41,20 +39,26 @@ long_height2$height.in = long_height2$height.cm * 0.3937
 
 Heights_Nation <- long_height2 %>%
   separate(decade2, into = c("century", "decade", "year"), sep = c(2, 3, 4)) %>% 
-  select(Code, country, century, decade, year, height.cm, year_decade, height.in)
+  select(Code, country, century, decade, year, height.cm, year_decade, height.in) 
 ```
 
 
 
 ```r
-# Use this R-Chunk to plot & visualize your data!
 germ_height <- Heights_Nation %>%
   filter(country == "Germany")
 
-ggplot(data = germ_height, mapping = aes(x = year_decade, y = height.in, col = country, group = country)) +
+world_height <- Heights_Nation %>% 
+  group_by(country) %>% 
+  filter(country!= "Germany")
+
+ggplot(data = world_height, mapping = aes(x = year_decade, y = height.in, col = country, group = country, alpha = .05)) +
   geom_point() +
   geom_line() +
-  labs(x = "Growth by Decade", y = "Average Male Height (Inches)", title = "Germany Average Male Height in Inches From 1810 -1980")
+  geom_point(data = germ_height, mapping = aes(x = year_decade, y = height.in, col = country, group = country, size = .5)) +
+  geom_line(data = germ_height, mapping = aes(x = year_decade, y = height.in, col = country, group = country, size = .5)) +
+  labs(x = "Growth by Decade", y = "Average Male Height (Inches)", title = "Germany Average Male Height in Inches From 1810 -1980", subtitle = "As compared to the rest of the world heights") +
+  theme(legend.position = "none")
 ```
 
 ![](Case-Study-5_files/figure-html/plot_data-1.png)<!-- -->
@@ -94,16 +98,28 @@ b19 <- Bavarian_dta %>%
 
 
 ```r
-# Dataset 3
-```
-
+# Dataset 3 G19
 tmpheight <- tempfile()
 
-download("https://byuistats.github.io/M335/data/heights/Heights_south-east.zip", tmpheight, "downloader.zip", mode = "wb")
+download("https://byuistats.github.io/M335/data/heights/Heights_south-east.zip", tmpheight, mode = "wb")
+unzip(tmpheight)
+SW_Height <- read.dbf("B6090.DBF", as.is = FALSE)
 
-sesw_dat <- read.dbf(tmpheight, as.is = FALSE)
-str(sesw_dat)
-View(sesw_dat)
+SW_Height2 <- SW_Height %>% 
+  select(GEBJZ, `F`, Z, V)
+
+SW_Height2$birth_year = SW_Height2$GEBJZ * 10
+SW_Height2$height.feet = SW_Height2$`F`*12
+SW_Height2$height.in2 = SW_Height2$V / 4
+SW_Height2$height.in = SW_Height2$height.feet + SW_Height2$height.in2 + SW_Height2$Z
+SW_Height2$height.cm = SW_Height2$height.in / 0.3937
+SW_Height2$study = "g19"
+
+g19 <- SW_Height2 %>% 
+  select(birth_year, height.in, height.cm, study)
+```
+
+
 
 
 ```r
@@ -150,7 +166,7 @@ w20$birth_year = as.numeric(w20$birth_year)
 
 
 ```r
-alld <- bind_rows(b19, g18, us20, w20)
+alld <- bind_rows(b19, g18, g19, us20, w20)
 pander(head(alld,10))
 ```
 
@@ -183,7 +199,7 @@ pander(head(alld,10))
 ```r
 ggplot(data = alld, mapping = aes(x = study, y = height.in, color = study)) +
   geom_boxplot() +
-  geom_jitter(height = 0, alpha = 0.25, size = .25)+
+  geom_jitter(height = 0, alpha = 0.25, size = .25) +
   labs(x= "Male Growth by Decade", y = "Male Height in Inches", title = "Comparison of Male Height Over the Past Century", subtitle = "Using multiple datasets and studies", color= "Study")
 ```
 
