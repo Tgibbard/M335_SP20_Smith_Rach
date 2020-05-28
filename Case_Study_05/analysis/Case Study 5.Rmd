@@ -29,11 +29,7 @@ library(readr)
 library(foreign)
 library(readxl)
 library(downloader)
-
-```
-
-```{r load_data}
-# Use this R-Chunk to import all your datasets!
+library(janitor)
 
 ```
 
@@ -47,25 +43,40 @@ _Place Task Background Here_
 # Use this R-Chunk to clean & wrangle your data!
 
 Height <- read_excel("Case_Study_05/Height.xlsx", skip = 2)
-View(Height)
 
-Height2 = Height[,grepl("_0$", names(Height))]
-View(Height2)
+Height2 <- remove_empty(Height, which = c("rows", "cols"), quiet = TRUE)
 
+long_height <- Height2 %>%
+  rename("country" = `Continent, Region, Country`) %>%
+  pivot_longer(cols = c(3:20), names_to = "decade2", values_to = "height.cm") %>%
+  separate(decade2, into = c("century", "decade", "year"), sep = c(2, 3, 4)) %>%
+  select(Code, country, century, decade, year, height.cm)
 
-Height2 <- Height %>% 
-  pivot_longer(c(1810, 1820, 1830, 1840, 1850, 1860, 1870, 1880, `1890`, `1900`, `1910`, `1920`, `1930`, `1940`, `1950`, `1960`, `1970`, `1980`, `1990`), names_to = "year_decade", values_to "height.cm")
+View(long_height)
 
-View(Height2)
-  
-     
 ```
+
+```{r}
+
+height_1 <- long_height %>% 
+  summarise(height.in = prod(height.cm, 0.39), height.cm = height.cm) %>%
+  select(Code, country, century, decade, year, height.cm, height.in)
+
+```
+
 
 ## Data Visualization
 
 ```{r plot_data}
 # Use this R-Chunk to plot & visualize your data!
+germ_height <- long_height %>% 
+  filter(country == "Germany") %>%
+  group_by(decade) %>%
+  summarise(height.in = prod(height.cm, 0.39)) %>%
+  select(Code, country, height.cm, year_decade, height.in)
 
+
+View(germ_height)
 ```
 
 ## Conclusions

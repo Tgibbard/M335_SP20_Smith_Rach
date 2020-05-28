@@ -1,12 +1,10 @@
 ---
 title: "Case Study 5"
 author: "Rachael Smith"
-date: "May 21, 2020"
+date: "May 28, 2020"
 output:
   html_document:  
     keep_md: true
-    toc: true
-    toc_float: true
     code_folding: hide
     fig_height: 6
     fig_width: 12
@@ -21,33 +19,177 @@ output:
 
 
 ```r
-# Use this R-Chunk to import all your datasets!
+# Read in Data
+
+Height <- read_excel("../Height.xlsx", skip = 2)
+Height2 <- remove_empty(Height, which = c("rows", "cols"), quiet = TRUE)
 ```
 
-## Background
-
-_Place Task Background Here_
-
-## Data Wrangling
+### Part 1
 
 
 ```r
 # Use this R-Chunk to clean & wrangle your data!
 
-world_tmpx <- tempfile()
+long_height2 <- Height2 %>%
+  rename("country" = `Continent, Region, Country`) %>%
+  pivot_longer(cols = c(3:20), names_to = "decade2", values_to = "height.cm") %>%
+  mutate(height.cm = as.numeric(height.cm))
 
-download("https://byuistats.github.io/M335/data/heights/Height.xlsx", world_tmpx, mode = "wb")
+long_height2$year_decade = long_height2$decade2
+long_height2$height.in = long_height2$height.cm * 0.3937
 
-world_xlsx <- read_xlsx(world_tmpx)
-
-View(world_xlsx)
+Heights_Nation <- long_height2 %>%
+  separate(decade2, into = c("century", "decade", "year"), sep = c(2, 3, 4)) %>% 
+  select(Code, country, century, decade, year, height.cm, year_decade, height.in)
 ```
 
-## Data Visualization
 
 
 ```r
 # Use this R-Chunk to plot & visualize your data!
+germ_height <- Heights_Nation %>%
+  filter(country == "Germany")
+
+ggplot(data = germ_height, mapping = aes(x = year_decade, y = height.in, col = country, group = country)) +
+  geom_point() +
+  geom_line() +
+  labs(x = "Growth by Decade", y = "Average Male Height (Inches)", title = "Germany Average Male Height in Inches From 1810 -1980")
 ```
 
-## Conclusions
+![](Case-Study-5_files/figure-html/plot_data-1.png)<!-- -->
+
+### Part 2
+
+
+```r
+# Dataset 1 G18
+
+German_dta <- read_dta('https://byuistats.github.io/M335/data/heights/germanconscr.dta')
+
+colnames(German_dta) [2] <- "birth_year"
+colnames(German_dta) [3] <- "height.cm"
+German_dta$height.in = German_dta$height.cm * 0.3937
+German_dta$study = "g18"
+
+g18 <- German_dta %>% 
+  select(birth_year, height.in, height.cm, study)
+```
+
+
+
+```r
+#Dataset 2 B19
+
+Bavarian_dta <- read_dta('https://byuistats.github.io/M335/data/heights/germanprison.dta')
+colnames(Bavarian_dta) [2] <- "birth_year"
+Bavarian_dta$birth_year = as.numeric(Bavarian_dta$birth_year)
+colnames(Bavarian_dta) [4] <- "height.cm"
+Bavarian_dta$height.in = Bavarian_dta$height.cm * 0.3937
+Bavarian_dta$study = "b19"
+
+b19 <- Bavarian_dta %>% 
+  select(birth_year, height.in, height.cm, study)
+```
+
+
+```r
+# Dataset 3
+```
+
+tmpheight <- tempfile()
+
+download("https://byuistats.github.io/M335/data/heights/Heights_south-east.zip", tmpheight, "downloader.zip", mode = "wb")
+
+sesw_dat <- read.dbf(tmpheight, as.is = FALSE)
+str(sesw_dat)
+View(sesw_dat)
+
+
+```r
+#Dataset 4 US20
+
+Bureau_dat <- read_csv('https://github.com/hadley/r4ds/raw/master/data/heights.csv')
+
+colnames(Bureau_dat) [2] <- "height.in"
+Bureau_dat$height.cm = Bureau_dat$height.in / 0.3937
+Bureau_dat$birth_year = "1950"
+Bureau_dat$birth_year = as.numeric(Bureau_dat$birth_year)
+Bureau_dat$study = "us20"
+
+us20 <- Bureau_dat %>% 
+  select(birth_year, height.in, height.cm, study)
+```
+
+
+
+```r
+Wisconsin_file <- read_sav("http://www.ssc.wisc.edu/nsfh/wave3/NSFH3%20Apr%202005%20release/main05022005.sav")
+
+Wisconsin_Height <- Wisconsin_file %>% 
+  select(CASE, TYPE, DOBY, RT216F, RT216I, RE35)
+
+Wisconsin_Height$RT216F = as.numeric(Wisconsin_Height$RT216F)
+Wisconsin_Height$RT216I = as.numeric(Wisconsin_Height$RT216I)
+colnames(Wisconsin_Height) [3] <- "century"
+Wisconsin_Height$height.inches = Wisconsin_Height$RT216F*12
+Wisconsin_Height$height.in = Wisconsin_Height$height.inches +  Wisconsin_Height$RT216I
+Wisconsin_Height$decade = "19"
+Wisconsin_Height$study = "w20"
+
+Wisconsin_Height$height.cm = Wisconsin_Height$height.in/0.3937
+
+w20 <- Wisconsin_Height %>%
+  filter(height.in >= 0 & height.cm >= 0 & height.in <= 90 & RE35 == 1) %>% 
+  mutate(century = cut(century, breaks = c(-12, 10, 20, 30, 40, 50, 60, 70), labels = c(10, 20, 30, 40, 50, 60, 70))) %>% 
+  unite(col = "birth_year", c(decade, century), sep = "")%>%
+  select(birth_year, height.in, height.cm, study)
+
+w20$birth_year = as.numeric(w20$birth_year)
+```
+
+
+```r
+alld <- bind_rows(b19, g18, us20, w20)
+pander(head(alld,10))
+```
+
+
+--------------------------------------------
+ birth_year   height.in   height.cm   study 
+------------ ----------- ----------- -------
+    1850        61.42        156       b19  
+
+    1850        66.14        168       b19  
+
+    1850        63.39        161       b19  
+
+    1850        62.6         159       b19  
+
+    1850        68.9         175       b19  
+
+    1850        68.11        173       b19  
+
+    1850        68.11        173       b19  
+
+    1850        67.72        172       b19  
+
+    1850        63.39        161       b19  
+
+    1850        68.9         175       b19  
+--------------------------------------------
+
+
+```r
+ggplot(data = alld, mapping = aes(x = birth_year, y = height.in, color = study)) +
+  geom_boxplot() +
+  geom_jitter(height = 0, alpha = 0.25, size = .25)
+```
+
+![](Case-Study-5_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
+### Part 3
+
+I feel like this data was very interesting to work with.  This was the first time we combined several datasets of different formats into a single dataset.  I can see how using a variety of data and sources could really add to the accuracy of a project, while also increaseing the complexity and pre-processing time substantially. I think the most time consuming part was simply trying to make the data match and making sure that I wasn't manipulating the results.
+
+Having more data helped create a more diverse picture of the overall to look at. I think because the data is coming from different sources, it also helps to know that we have a very large sample to compare from.  Overall, it appears that men have been getting taller over the years.  The boxplots show an increase in the overall male height, while the Q1 of the data has stayed fairly consistent.
