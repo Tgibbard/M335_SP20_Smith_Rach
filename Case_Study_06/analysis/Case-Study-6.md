@@ -1,7 +1,7 @@
 ---
 title: "Case Study 6"
 author: "Rachael Smith"
-date: "May 30, 2020"
+date: "June 02, 2020"
 output:
   html_document:  
     keep_md: true
@@ -18,6 +18,45 @@ output:
 
 
 
+```r
+# Load and Join all the datasets
+
+player_salaries <- Salaries %>% 
+  select(salary, teamID, playerID, lgID, yearID)
+
+player_teams <- Teams %>% 
+  select(yearID, teamID, lgID, W, L, LgWin, WSWin, name)
+
+salaries_league <- Salaries %>% 
+  left_join(player_teams, by = c("teamID", "yearID"))
+
+player_name <- People %>% 
+  select(nameFirst, nameLast, playerID, retroID, bbrefID)
+
+player_college <- CollegePlaying %>% 
+  filter(schoolID %in% c("utah", "utahst", "utahvalley", "utdixie", "utslxxo", "utsnojc", "byu")) %>% 
+  select(-yearID)
+
+utah_players <- player_college %>% 
+  left_join(salaries_league, by = "playerID") %>%
+  left_join(player_name, by = "playerID")
+
+utah_players2 <- utah_players %>% 
+  select(nameFirst, nameLast, salary, schoolID, yearID, name, W, L, LgWin, WSWin)
+
+utah_players3 <- utah_players2 %>%
+  mutate(yearID = as.numeric(yearID)) %>% 
+  filter(salary >= 0) %>% 
+  unite("Full Name", c(nameFirst, nameLast), sep = " ")
+
+inflation <- inflation_adjust(2017) %>%
+  mutate(year = as.numeric(year)) %>% 
+  select(year, adj_value)
+
+utah_inflation <- utah_players3 %>%
+  left_join(inflation, by = c("yearID" = "year")) %>% 
+  mutate(adj_salary = round(salary / adj_value))
+```
 
 -----
 

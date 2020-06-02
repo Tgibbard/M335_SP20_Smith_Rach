@@ -11,7 +11,7 @@
 
 <meta name="author" content="Rachael Smith" />
 
-<meta name="date" content="2020-05-30" />
+<meta name="date" content="2020-06-02" />
 
 <title>Case Study 6</title>
 
@@ -436,13 +436,50 @@ summary {
 
 <h1 class="title toc-ignore">Case Study 6</h1>
 <h4 class="author">Rachael Smith</h4>
-<h4 class="date">May 30, 2020</h4>
+<h4 class="date">June 02, 2020</h4>
 
 </div>
 
 
 <div id="take-me-out-to-the-ball-game" class="section level3">
 <h3>Take me out to the ball game</h3>
+<pre class="r"><code># Load and Join all the datasets
+
+player_salaries &lt;- Salaries %&gt;% 
+  select(salary, teamID, playerID, lgID, yearID)
+
+player_teams &lt;- Teams %&gt;% 
+  select(yearID, teamID, lgID, W, L, LgWin, WSWin, name)
+
+salaries_league &lt;- Salaries %&gt;% 
+  left_join(player_teams, by = c(&quot;teamID&quot;, &quot;yearID&quot;))
+
+player_name &lt;- People %&gt;% 
+  select(nameFirst, nameLast, playerID, retroID, bbrefID)
+
+player_college &lt;- CollegePlaying %&gt;% 
+  filter(schoolID %in% c(&quot;utah&quot;, &quot;utahst&quot;, &quot;utahvalley&quot;, &quot;utdixie&quot;, &quot;utslxxo&quot;, &quot;utsnojc&quot;, &quot;byu&quot;)) %&gt;% 
+  select(-yearID)
+
+utah_players &lt;- player_college %&gt;% 
+  left_join(salaries_league, by = &quot;playerID&quot;) %&gt;%
+  left_join(player_name, by = &quot;playerID&quot;)
+
+utah_players2 &lt;- utah_players %&gt;% 
+  select(nameFirst, nameLast, salary, schoolID, yearID, name, W, L, LgWin, WSWin)
+
+utah_players3 &lt;- utah_players2 %&gt;%
+  mutate(yearID = as.numeric(yearID)) %&gt;% 
+  filter(salary &gt;= 0) %&gt;% 
+  unite(&quot;Full Name&quot;, c(nameFirst, nameLast), sep = &quot; &quot;)
+
+inflation &lt;- inflation_adjust(2017) %&gt;%
+  mutate(year = as.numeric(year)) %&gt;% 
+  select(year, adj_value)
+
+utah_inflation &lt;- utah_players3 %&gt;%
+  left_join(inflation, by = c(&quot;yearID&quot; = &quot;year&quot;)) %&gt;% 
+  mutate(adj_salary = round(salary / adj_value))</code></pre>
 <hr />
 <pre class="r"><code># prep data for graphs
 
