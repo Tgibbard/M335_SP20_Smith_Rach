@@ -1,7 +1,7 @@
 ---
 title: "Task 08 World Data Investigations - Part 2"
 author: "Rachael Smith"
-date: "May 14, 2020"
+date: "June 04, 2020"
 output:
   html_document:  
     keep_md: true
@@ -20,6 +20,31 @@ I created these maps by referencing this site:
 https://www.datanovia.com/en/blog/how-to-create-a-map-using-ggplot2/
 
 
+
+
+```r
+serbia_dat <- ourworldindata::financing_healthcare %>%
+  filter(country == "Greenland")
+
+africa_dat <- ourworldindata::financing_healthcare %>%
+  group_by(country) %>% 
+  filter(continent == "Africa") %>% 
+  select(country, child_mort)
+
+america_dat <- ourworldindata::financing_healthcare %>%
+  group_by(country) %>% 
+  filter(continent == "Americas") %>% 
+  select(country, child_mort)
+
+fin_dat <- ourworldindata::financing_healthcare %>%
+  filter(year == "1900" | year == "1960" | year == "2000" | year == "2010") %>% 
+  mutate(country = replace(country, country == "Democratic Republic of Congo", "Democratic Republic of the Congo")) %>%
+  mutate(country = replace(country, country == "United States", "USA")) %>%
+  mutate(country = replace(country, country == "Congo", "Republic of Congo")) %>%
+   mutate(country = replace(country, country == "Cote d'Ivoire", "Ivory Coast")) %>%
+  rename("region" = country, "lifeExp" = life_expectancy) %>%
+  select(year, region, lifeExp, child_mort)
+```
 
 
 ```r
@@ -55,7 +80,7 @@ ggplot(data = mort_1900, aes(map_id = region, fill = child_mort)) +
   labs(title = "YEAR 1990: World Child Mortality Rate by Country", subtitle= "Child Mortality (0-5 year-olds dying per 1,000 born)", fill = "Child Mortality Rate\nPer 1,000 Born", x = "Year 1900", caption = "The under 5 mortality rate is the probability of a child born in a specific year dying before reaching the age of five if subject to current age-specific mortality rates.")
 ```
 
-![](Task-8_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](Task-8_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
 
 
 ```r
@@ -71,7 +96,7 @@ ggplot(data = mort_2000, aes(map_id = region, fill = child_mort)) +
   labs(title = "YEAR 2000: World Child Mortality Rate by County", subtitle= "Child Mortality (0-5 year-olds dying per 1,000 born)", fill = "Child Mortality Rate\nPer 1,000 Born", x = "Year: 2000", caption = "The under 5 mortality rate is the probability of a child born in a specific year dying before reaching the age of five if subject to current age-specific mortality rates.")
 ```
 
-![](Task-8_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](Task-8_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
 -----
 
@@ -92,7 +117,7 @@ ggplot(data = plot_1960, aes(map_id = region, fill = lifeExp)) +
   labs(title = "YEAR 1960: World Life Expectancy by Country", subtitle = "Life expectancy at birth, total (years)", fill = "Life Expectancy\nRate in Years", x = "Year: 1960", caption = "Life expectancy at birth, total (years). Indicates the number of years a newborn infant would live if prevailing patterns of mortality at the time of its birth were to stay the same throughout its life.")
 ```
 
-![](Task-8_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](Task-8_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 
 

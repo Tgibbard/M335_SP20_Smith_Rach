@@ -34,6 +34,10 @@ theme_set(
   theme_void()
 )
 
+
+```
+
+```{r}
 serbia_dat <- ourworldindata::financing_healthcare %>%
   filter(country == "Greenland")
 

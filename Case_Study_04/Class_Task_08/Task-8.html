@@ -11,7 +11,7 @@
 
 <meta name="author" content="Rachael Smith" />
 
-<meta name="date" content="2020-05-14" />
+<meta name="date" content="2020-06-04" />
 
 <title>Task 08 World Data Investigations - Part 2</title>
 
@@ -436,7 +436,7 @@ summary {
 
 <h1 class="title toc-ignore">Task 08 World Data Investigations - Part 2</h1>
 <h4 class="author">Rachael Smith</h4>
-<h4 class="date">May 14, 2020</h4>
+<h4 class="date">June 04, 2020</h4>
 
 </div>
 
@@ -445,6 +445,27 @@ summary {
 <h2>Background</h2>
 <p>Child Mortality and Life Expectancy by country data from: <a href="https://ourworldindata.org/financing-healthcare/" class="uri">https://ourworldindata.org/financing-healthcare/</a></p>
 <p>I created these maps by referencing this site: <a href="https://www.datanovia.com/en/blog/how-to-create-a-map-using-ggplot2/" class="uri">https://www.datanovia.com/en/blog/how-to-create-a-map-using-ggplot2/</a></p>
+<pre class="r"><code>serbia_dat &lt;- ourworldindata::financing_healthcare %&gt;%
+  filter(country == &quot;Greenland&quot;)
+
+africa_dat &lt;- ourworldindata::financing_healthcare %&gt;%
+  group_by(country) %&gt;% 
+  filter(continent == &quot;Africa&quot;) %&gt;% 
+  select(country, child_mort)
+
+america_dat &lt;- ourworldindata::financing_healthcare %&gt;%
+  group_by(country) %&gt;% 
+  filter(continent == &quot;Americas&quot;) %&gt;% 
+  select(country, child_mort)
+
+fin_dat &lt;- ourworldindata::financing_healthcare %&gt;%
+  filter(year == &quot;1900&quot; | year == &quot;1960&quot; | year == &quot;2000&quot; | year == &quot;2010&quot;) %&gt;% 
+  mutate(country = replace(country, country == &quot;Democratic Republic of Congo&quot;, &quot;Democratic Republic of the Congo&quot;)) %&gt;%
+  mutate(country = replace(country, country == &quot;United States&quot;, &quot;USA&quot;)) %&gt;%
+  mutate(country = replace(country, country == &quot;Congo&quot;, &quot;Republic of Congo&quot;)) %&gt;%
+   mutate(country = replace(country, country == &quot;Cote d'Ivoire&quot;, &quot;Ivory Coast&quot;)) %&gt;%
+  rename(&quot;region&quot; = country, &quot;lifeExp&quot; = life_expectancy) %&gt;%
+  select(year, region, lifeExp, child_mort)</code></pre>
 <pre class="r"><code># Upload world map data 
 
 world_map &lt;- map_data(&quot;world&quot;) %&gt;% 
