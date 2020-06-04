@@ -1,7 +1,7 @@
 ---
 title: "Case Study 6"
 author: "Rachael Smith"
-date: "June 02, 2020"
+date: "June 04, 2020"
 output:
   html_document:  
     keep_md: true

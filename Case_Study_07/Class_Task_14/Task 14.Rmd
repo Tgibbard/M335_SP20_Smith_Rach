@@ -1,0 +1,113 @@
+---
+title: "Task 14"
+author: "Rachael Smith"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:  
+    keep_md: true
+    fig_height: 12
+    fig_width: 12
+    fig_align: 'center'
+    code_folding: hide
+---
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r load_libraries, include=FALSE}
+# Use this R-Chunk to load all your libraries!
+#install.packages("tidyverse") # run this line once in console to get package
+
+library(tidyverse)
+library(pander)
+library(downloader)
+library(readxl)
+
+```
+
+```{r}
+tmpx <- tempfile()
+
+download("https://github.com/byuistats/data/blob/master/Dart_Expert_Dow_6month_anova/Dart_Expert_Dow_6month_anova.xlsx?raw=true", tmpx, mode = "wb")
+
+xlsx_file <- read_xlsx(tmpx)
+
+tidy_contest <- xlsx_file %>%
+  separate(contest_period, into = c("start", "end"), sep = "-") %>%
+  mutate(year_end = substr(end, nchar(end) - 3, nchar(end))) %>% 
+  separate(end, into = "Month", sep = -4) %>% 
+  mutate(
+    Month = replace(Month, Month == "Dec.", "December"),
+    Month = replace(Month, Month == "Febuary", "February"))
+```
+
+```{r plot_data}
+
+wide_stock <- tidy_contest %>%
+  select(-start) %>% 
+  pivot_wider(values_from = value, names_from = year_end) %>%
+  mutate(Month = fct_relevel(Month,month.name)) %>% 
+  arrange(Month)
+```
+
+#### Stock Data Line Plot
+
+###### Stock Data by Month
+
+```{r message=FALSE, warning=FALSE}
+
+longer_stock <- tidy_contest %>%
+  mutate(year_end = as.numeric(year_end)) %>%  
+  group_by(year_end, variable ) %>% 
+  select(-start) %>%
+  mutate(Month = fct_relevel(Month, month.name)) %>% 
+  arrange(Month)
+
+ggplot(data = longer_stock, aes(x = year_end, y = value, color = variable, group = variable)) +
+  geom_point() +
+  geom_line(aes(group = variable)) +
+  facet_wrap(~fct_relevel(Month, month.name), ncol = 2) +
+  theme(legend.position = "bottom") +
+  labs(title = "Time Series Plot of 6 Month Returns for Stocks by Month", x = "Years", y = "Return Value in $", color = "Stocks")
+
+```
+
+This graph is useful for noticing the monthly or seasonal trends for each stock value.  The most noticable difference, is that the PROS stock historically performs better in January than the other two stocks. DJIA is the most steadily performing stock with no large jumps or dips over any month during the 8 year period.  DARTS shows more vaiability between years and months than the other two stocks.
+
+-----
+
+#### Stock Data Tables
+
+##### PROS Stock Values by Month
+
+```{r}
+
+pros_stock <- wide_stock %>% 
+  filter(variable == "PROS") %>% 
+  select (-variable)
+
+pander(pros_stock)
+```
+
+##### DARTS Stock Values by Month
+
+```{r}
+
+darts_stock <- wide_stock %>% 
+  filter(variable == "DARTS") %>% 
+  select (-variable)
+
+pander(darts_stock)
+```
+
+##### DJIA Stock Values by Month
+
+```{r}
+
+djia_stock <- wide_stock %>% 
+  filter(variable == "DJIA") %>% 
+  select (-variable)
+
+pander(djia_stock)
+```
