@@ -1,0 +1,105 @@
+---
+title: "CASE STUDY TITLE"
+author: "YOUR NAME"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:  
+    keep_md: true
+    toc: true
+    toc_float: true
+    code_folding: hide
+    fig_height: 6
+    fig_width: 12
+    fig_align: 'center'
+---
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r load_libraries, include=FALSE}
+# Use this R-Chunk to load all your libraries!
+#install.packages("tidyverse") # run this line once in console to get package
+
+library(tidyverse)
+library(readr)
+library(maps)
+library(lubridate)
+
+```
+
+```{r load_data}
+# Use this R-Chunk to import all your datasets!
+abc <- read_csv("https://storybench.org/reinventingtv/abc7ny.csv")
+kcra <- read_csv("https://storybench.org/reinventingtv/kcra.csv")
+
+news <- abc %>% 
+  rbind(kcra)
+
+View(news)
+
+```
+
+```{r}
+
+months_dat1 <- news %>% 
+  separate(col = datetime, into = c("date", "time"), sep = "at") %>% 
+  mutate(datetime = mdy(date)) %>% 
+  mutate(month = month(datetime))
+
+month_complete <- months_dat1 %>% 
+  complete(month = seq.Date(min(month), max(month), by ="day"))
+ 
+
+months_dat1 <- tolower(news$headline) %>% str_c(collapse = "|") %>% str_extract_all(city_list) %>% str_extract_all(month)%>% unlist()
+
+View(months_dat1)
+
+city_list2 <- us.cities %>% 
+  separate(name, into = "city",sep = c(-3)) %>% 
+  mutate(city = tolower(city)) 
+
+city_list <- city_list2$city %>% 
+  str_c(collapse = "|")
+
+city_list
+
+headlines <- tolower(news$headline) %>% group_by%>% str_c(collapse = "|") %>% str_extract_all(city_list) %>% unlist()
+
+headlines
+
+```
+
+```{r}
+city_count <- headlines %>% 
+  data.frame() %>% 
+  rename("cities" = ".") %>% 
+  group_by(cities, month) %>% 
+  summarise(count = n()) %>%
+  top_n(15, count)
+
+```
+
+```{r tidy_data}
+ggplot(data = city_count, mapping=aes(x = fct_reorder(cities, count), y =count, fill = cities))+
+  geom_col()+
+  labs(x = "Top 15 cities", y = "number of headlines mentioned", title = "Top 15 Cities with the most mentions in the headlines of 2 Major News Outlets")
+  
+```
+
+```{r plot_data}
+# Use this R-Chunk to plot & visualize your data!
+
+
+
+```
+
+```{r}
+tolower(news$headline)
+
+month_data <- news %>%
+ str_extract_all(city_count$cities %in% news&headline)
+
+View(month_data)
+```
+
