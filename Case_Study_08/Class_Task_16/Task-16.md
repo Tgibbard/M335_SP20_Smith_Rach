@@ -108,6 +108,10 @@ ggplot(data =verse_count, aes(x = verse_number, y = wc)) +
 
 ![](Task-16_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
+This graph shows three things that are interesting.  The first is the total number of verses per Book is represented by each Hexagon.  The second is the total number of words.  The mean word count per book is represented by the red horizontal line.  The fill color represents the number of words per verse.
+
+I think the most challenging part of this graph was making sure that it wasn't showing anything that wasn't already there.  It took several variations to make sure that all of the things were reprented that I wanted to. I like the hexagon shape because it helps us to see how many verses there are for each book, as well as how long eaach verse is.  I like that using the hexagon plot, I am able to show multiple things at once, without losing any integrity of my data. 
+
 
 
 ```r
@@ -118,7 +122,7 @@ for(i in 1:nrow(bom)){
   bom$wc[i] = str_count(bom$scripture_text[i], "\\W+")
 }
 
-pander(mosaic::favstats(bom$wc))
+pander(mosaic::favstats(bom$wc, main = "Summary of Book of Mormon Word Count"))
 ```
 
 Registered S3 method overwritten by 'mosaic':
