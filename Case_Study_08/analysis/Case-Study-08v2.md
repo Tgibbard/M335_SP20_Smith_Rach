@@ -52,18 +52,18 @@ head(Christ_count)
 ```r
 Christ_dat <- tolower(Christ_count$name) 
 
-christ_names <- Christ_count$name %>% str_remove_all("[:punct:]") %>%  data.frame() %>% rename("c_names" = ".")
+christ_names <- Christ_dat %>% str_remove_all("[:punct:]") %>%  data.frame() %>% rename("c_names" = ".")
 
 head(christ_names)
 ```
 
 ```
 ##   c_names
-## 1     God
+## 1     god
 ## 2    <NA>
 ## 3    <NA>
 ## 4    <NA>
-## 5    Lord
+## 5    lord
 ## 6    <NA>
 ```
 
