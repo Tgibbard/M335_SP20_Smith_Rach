@@ -1,0 +1,111 @@
+---
+title: "CASE STUDY 8"
+author: "Rachael Smith"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:  
+    keep_md: true
+    toc: true
+    fig_height: 6
+    fig_width: 12
+    fig_align: 'center'
+---
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r load_libraries, include=FALSE}
+# Use this R-Chunk to load all your libraries!
+#install.packages("tidyverse") # run this line once in console to get package
+library(tidyverse)
+library(downloader)
+library(pander)
+library(stringi)
+library(viridis)
+library(readr)
+
+
+```
+
+```{r load_data}
+# Use this R-Chunk to import all your datasets!
+
+scriptures <- read_csv("..//lds-scriptures.csv")
+
+scriptures <- scriptures %>% 
+  filter(volume_title =="Book of Mormon")
+
+savior_names <- read_rds(gzcon(url("https://byuistats.github.io/M335/data/BoM_SaviorNames.rds")))
+
+savior_names <- savior_names %>%  mutate(verse_title = reference) %>% mutate(Christ = words)
+
+View(savior_names)
+
+savior_scriptures <- scriptures %>% 
+  left_join(savior_names, by = "verse_title")
+
+View(savior_scriptures)
+
+Christ_count <- savior_scriptures %>% 
+  select(chapter_id, verse_id, book_title, scripture_text, verse_title, name, Christ)
+
+View(Christ_count)
+
+```
+
+
+```{r}
+
+Christ_dat <- tolower(Christ_count$scripture_text) %>% str_c(collapse = " ") %>%
+str_remove_all("[:punct:]") %>%  unlist() %>% data.frame()
+
+View(Christ_dat)
+
+```
+
+```{r}
+bom_nolines <- tolower(Christ_count$scripture_text) %>% str_c(collapse = " ") %>% str_remove_all("[:punct:]") %>%  unlist() %>% data.frame()
+
+bom_nolines
+```
+
+
+```{r}
+
+savior_dat <- tolower(savior_names$name) 
+
+
+```
+
+
+```{r}
+savior_count <- savior_dat %>% 
+  data.frame() 
+
+View(savior_count)
+```
+
+%>% str_c(collapse = "|") %>%
+unlist()
+
+%>% 
+  rename("cities" = ".") %>% 
+  group_by(cities, month) %>% 
+  summarise(count = n()) %>%
+  top_n(15, count)
+
+```{r}
+
+for(i in length(savior_count$.)){
+  bom_nolines$name_count <- str_replace_all(bom_nolines$., "savior_count$.[i]", "?")
+}
+
+head(bom_nolines)
+
+```
+
+```{r}
+
+```
+
