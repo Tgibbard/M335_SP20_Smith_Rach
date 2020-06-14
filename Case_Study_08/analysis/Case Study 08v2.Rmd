@@ -22,7 +22,6 @@ library(tidyverse)
 library(downloader)
 library(pander)
 library(stringi)
-library(viridis)
 library(readr)
 
 ```
@@ -44,41 +43,25 @@ savior_scriptures <- scriptures %>%
 
 Christ_count <- savior_scriptures %>% 
   select(chapter_id, verse_id, book_title, scripture_text, verse_title, name, Christ)
+head(Christ_count)
 
 ```
 
-
 ```{r}
 
-Christ_dat <- Christ_count %>%  mutate(name = tolower(name)) %>% str_c(collapse = " ") %>%
-str_remove_all("[:punct:]") %>% unlist() %>% data.frame() %>% mutate(rename("Christ_names" = "."))
+Christ_dat <- tolower(Christ_count$name) 
 
+christ_names <- Christ_dat %>% str_remove_all("[:punct:]") %>%  data.frame() %>% rename("c_names" = ".")
+
+head(christ_names)
 ```
 
 ```{r}
 bom_nolines <- tolower(Christ_count$scripture_text) %>% str_c(collapse = " ") %>% str_remove_all("[:punct:]") %>%  unlist() %>% data.frame() %>% rename("verses" = ".")
 
+head(bom_nolines)
 ```
 
-
-```{r}
-
-savior_count <- Christ_dat  %>% 
-  mutate(name = tolower(name)) %>%
-  data.frame()
-  
-
-View(savior_count)
-
-```
-
-
-```{r}
-
-  
-
-
-```
 
 %>% str_c(collapse = "|") %>%
 unlist()
